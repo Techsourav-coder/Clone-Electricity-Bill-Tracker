@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WBSEDCL Consumer Bill Tracker</title>
+  <style>
+    /* Global Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /* Body and Container Styling */
+    body {
+      background-color: #f4f7fc;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 90%;
+      margin: 20px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      color: #4a90e2;
+      font-weight: bold;
+    }
+
+    /* Form Styling */
+    form {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8f9fc;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    form h2 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    form input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    form input:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+
+    form button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4a90e2;
+      color: #fff;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #357ab8;
+    }
+
+    /* Bill List Styling */
+    #bill-list {
+      margin-top: 20px;
+    }
+
+    .bill-item {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: #f9f9f9;
+      border: 1px solid #eaeaea;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease;
+    }
+
+    .bill-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .bill-item.paid {
+      border-left: 5px solid #28a745;
+    }
+
+    .bill-item.unpaid {
+      border-left: 5px solid #dc3545;
+    }
+
+    .bill-details p {
+      margin: 5px 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .bill-details p strong {
+      font-size: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    footer p {
+      margin-bottom: 0;
+    }
+
+    footer a {
+      color: #4a90e2;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      form h2 {
+        font-size: 0.9rem;
+      }
+
+      form input {
+        font-size: 0.9rem;
+      }
+
+      form button {
+        font-size: 0.9rem;
+      }
+
+      .bill-details p {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>WBSEDCL Consumer Bill Tracker</h1>
+    </header>
+    <main>
+      <!-- Form to Search Consumer ID -->
+      <form id="search-consumer-form">
+        <h2>Enter Consumer ID</h2>
+        <input type="text" id="consumerId" placeholder="e.g., 12345" required>
+        <button type="submit">Search</button>
+      </form>
+
+      <!-- Display Bill List -->
+      <div id="bill-list">
+        <!-- Bill items will be dynamically inserted here -->
+      </div>
+    </main>
+    <footer>
+      <p>© 2024 WBSEDCL | All Rights Reserved</p>
+    </footer>
+  </div>
+  <script>
+    // Simulated bill data for multiple Consumer IDs
+    const allBills = {
+      "12345": [
+        { month: "January", dueDate: "2024-01-15", amount: 1200, paid: false },
+        { month: "February", dueDate: "2024-02-15", amount: 1100, paid: true },
+      ],
+      "67890": [
+        { month: "March", dueDate: "2024-03-15", amount: 1300, paid: false },
+        { month: "April", dueDate: "2024-04-15", amount: 1400, paid: false },
+      ],
+      "11223": [
+        { month: "May", dueDate: "2024-05-15", amount: 1250, paid: true },
+        { month: "June", dueDate: "2024-06-15", amount: 1500, paid: false },
+      ],
+    };
+
+    // Function to display bills for a given Consumer ID
+    function displayBills(consumerId) {
+      const billList = document.getElementById("bill-list");
+      billList.innerHTML = ""; // Clear previous content
+
+      if (!allBills[consumerId]) {
+        billList.innerHTML = `<p>No bills found for Consumer ID: ${consumerId}</p>`;
+        return;
+      }
+
+      const bills = allBills[consumerId];
+      bills.forEach((bill) => {
+        const billItem = document.createElement("div");
+        billItem.className = `bill-item ${bill.paid ? "paid" : "unpaid"}`;
+
+        const billDetails = document.createElement("div");
+        billDetails.className = "bill-details";
+        billDetails.innerHTML = `
+          <p><strong>${bill.month}</strong></p>
+          <p>Due Date: ${bill.dueDate}</p>
+          <p>Amount: ₹${bill.amount}</p>
+          <p>Status: ${bill.paid ? "Paid" : "Unpaid"}</p>
+        `;
+
+        billItem.appendChild(billDetails);
+        billList.appendChild(billItem);
+      });
+    }
+
+    // Function to handle Consumer ID form submission
+    function handleSearch(event) {
+      event.preventDefault(); // Prevent form submission
+      const consumerId = document.getElementById("consumerId").value.trim();
+      if (consumerId) {
+        displayBills(consumerId);
+      } else {
+        alert("Please enter a valid Consumer ID.");
+      }
+    }
+
+    // Add event listener to the form
+    document
+      .getElementById("search-consumer-form")
+      .addEventListener("submit", handleSearch);
+
+    // On page load, display a message or instructions
+    window.onload = () => {
+      document.getElementById(
+        "bill-list"
+      ).innerHTML = `<p>Enter a Consumer ID to view bill details.</p>`;
+    };
+  </script>
+</body>
+</html>
+
+
+
